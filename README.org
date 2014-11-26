@@ -1,0 +1,96 @@
+#+TITLE:       utilities.print-tree README
+#+AUTHOR:      Jan Moringen
+#+EMAIL:       jmoringe@techfak.uni-bielefeld.de
+#+DESCRIPTION: A simple system for pretty-printing tree structures
+#+KEYWORDS:    common lisp, tree, printing, pretty-printing
+#+LANGUAGE:    en
+
+* Introduction
+  The =utilities.print-tree= system provides simple facilities for
+  printing tree structures in an easy to read way using either ASCII
+  or Unicode characters to render the parent-child relations. One
+  focus is playing nicely with pretty printing.
+
+  The following example shows the result of printing the
+  =utilities.print-tree= ASDF system without and with additional
+  details added to nodes:
+  #+begin_example
+  utilities.print-tree
+  ├─src
+  │ ├─package
+  │ └─print-tree
+  └─README.org
+  #+end_example
+  Note how pretty-printing of the "Depends-on" entry works seamlessly
+  with tree printing:
+  #+begin_example
+  utilities.print-tree
+  │ Pathname   /home/jmoringe/code/cl/utilities.print-tree/
+  │ Encoding   UTF-8
+  │ Depends-on ((#<LOAD-OP > #<MODULE "utilities.print-tree" "src">
+  │              #<STATIC-FILE "utilities.print-tree" "README.org">)
+  │             (PREPARE-OP #<SYSTEM "utilities.print-tree">)
+  │             (COMPILE-OP #<SYSTEM "utilities.print-tree">))
+  ├─src
+  │ │ Pathname   /home/jmoringe/code/cl/utilities.print-tree/src/
+  │ │ Encoding   UTF-8
+  │ │ Depends-on ((#<LOAD-OP >
+  │ │              #<CL-SOURCE-FILE "utilities.print-tree" "src" "package">
+  │ │              #<CL-SOURCE-FILE "utilities.print-tree" "src" "print-tree">)
+  │ │             (PREPARE-OP #<MODULE "utilities.print-tree" "src">)
+  │ │             (COMPILE-OP #<MODULE "utilities.print-tree" "src">))
+  │ ├─package
+  │ │   Pathname   /home/jmoringe/code/cl/utilities.print-tree/src/package.lisp
+  │ │   Encoding   UTF-8
+  │ │   Depends-on ((PREPARE-OP
+  │ │                #<CL-SOURCE-FILE "utilities.print-tree" "src" "package">)
+  │ │               (COMPILE-OP
+  │ │                #<CL-SOURCE-FILE "utilities.print-tree" "src" "package">))
+  │ └─print-tree
+  │     Pathname   /home/jmoringe/code/cl/utilities.print-tree/src/print-tree.lisp
+  │     Encoding   UTF-8
+  │     Depends-on ((PREPARE-OP
+  │                  #<CL-SOURCE-FILE "utilities.print-tree" "src" "print-tree">)
+  │                 (COMPILE-OP
+  │                  #<CL-SOURCE-FILE "utilities.print-tree" "src" "print-tree">))
+  └─README.org
+      Pathname   /home/jmoringe/code/cl/utilities.print-tree/README.org
+      Encoding   UTF-8
+      Depends-on ((PREPARE-OP #<STATIC-FILE "utilities.print-tree" "README.org">)
+                  (COMPILE-OP #<STATIC-FILE "utilities.print-tree" "README.org">))
+  #+end_example
+
+  The following code produces this output:
+  #+begin_src lisp
+    (defmethod print-component ((target stream) (depth t) (component asdf:component))
+      (princ (asdf:component-name component) target))
+
+    (defmethod print-details ((target stream) (depth t) (component asdf:component))
+      (format target "Pathname   ~A~@:_~
+                      Encoding   ~A~@:_~
+                      Depends-on ~A"
+              (asdf:component-pathname   component)
+              (asdf:component-encoding   component)
+              (asdf:component-depends-on 'asdf:load-op component)))
+
+    (defmethod asdf:component-children ((component t))
+      '())
+
+    (labels ((do-it (details?)
+               (fresh-line)
+               (terpri)
+               (print-tree *standard-output* (asdf:find-system :utilities.print-tree)
+                           (make-node-printer #'print-component
+                                              (when details? #'print-details)
+                                              #'asdf:component-children))))
+      (do-it nil)
+      (do-it t))
+  #+end_src
+  The full code of this example is available in [[file:examples/asdf.lisp]].
+* settings                                                         :noexport:
+#+STARTUP: content
+
+# Local Variables:
+# mode: org
+# indent-tabs-mode: nil
+# End:
