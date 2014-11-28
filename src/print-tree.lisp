@@ -186,11 +186,16 @@
                       (print-ellipsis/first-line ()
                         (format stream "…"))
 
-                      (print-content (&optional (printer rest-printer))
+                      (print-content (children? &optional (printer rest-printer))
                         (when printer
                           (pprint-newline :mandatory stream)
-                          (print-node-contents
-                           stream (rcurry printer element) final? depth)))
+                          (flet ((content-printer (stream depth)
+                                   (print-node-contents
+                                    stream (rcurry printer element)
+                                    (if children? nil t) depth)))
+                            (declare (dynamic-extent #'content-printer))
+                            (print-node-contents
+                             stream #'content-printer final? depth))))
                       (print-ellipsis/content (stream depth element)
                         (declare (ignore depth element))
                         (format stream "…"))
@@ -225,7 +230,7 @@
                  ;; indicates that the node actually has content.
                  (cond
                    ((and rest? content?)
-                    (print-content))
+                    (print-content children))
                    ((and rest? first?)
                     (print-content #'print-ellipsis/content)))
                  ;; Print children if requested.
