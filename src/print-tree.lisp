@@ -181,11 +181,12 @@
 
    When PREDICATE returns T, all bits are printed."
   (labels ((printer (stream element final? depth)
-             (labels ((print-first-line ()
+             (labels (;; Printers for first line of node.
+                      (print-first-line ()
                         (funcall first-line-printer stream depth element))
                       (print-ellipsis/first-line ()
                         (format stream "…"))
-
+                      ;; Printers for content of node.
                       (print-content (children? &optional (printer rest-printer))
                         (when printer
                           (pprint-newline :mandatory stream)
@@ -199,7 +200,7 @@
                       (print-ellipsis/content (stream depth element)
                         (declare (ignore depth element))
                         (format stream "…"))
-
+                      ;; Printers for children of node.
                       (print-children (children &optional (printer #'printer))
                         (when children
                           (pprint-newline :mandatory stream)
@@ -213,13 +214,13 @@
                (declare (dynamic-extent #'print-first-line #'print-ellipsis/first-line
                                         #'print-content #'print-ellipsis/content
                                         #'print-children #'print-ellipsis/children))
-               (let* ((bits (funcall predicate depth element))
+               (let* ((rest?)
+                      (children           (funcall children element))
+                      (bits               (funcall predicate depth element))
                       (first?             (bit? :first bits))
-                      (rest?)
                       (content?           (bit? :content bits))
                       (children?          (bit? :children bits))
-                      (children-ellipsis? (bit? :children-ellipsis bits))
-                      (children           (funcall children element)))
+                      (children-ellipsis? (bit? :children-ellipsis bits)))
                  ;; Print first line, if requested. The printer
                  ;; returns a Boolean (stored in REST?) to indicate
                  ;; whether the node has :content.
@@ -230,9 +231,10 @@
                  ;; indicates that the node actually has content.
                  (cond
                    ((and rest? content?)
-                    (print-content children))
+                    (print-content (and (or children? children-ellipsis?) children)))
                    ((and rest? first?)
-                    (print-content #'print-ellipsis/content)))
+                    (print-content (and (or children? children-ellipsis?) children)
+                                   #'print-ellipsis/content)))
                  ;; Print children if requested.
                  (cond
                    (children?
