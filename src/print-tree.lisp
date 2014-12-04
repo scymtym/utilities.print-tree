@@ -202,9 +202,8 @@
                         (format stream "…"))
                       ;; Printers for children of node.
                       (print-children (children &optional (printer #'printer))
-                        (when children
-                          (pprint-newline :mandatory stream)
-                          (print-subtree stream children printer final? depth)))
+                        (pprint-newline :mandatory stream)
+                        (print-subtree stream children printer final? depth))
                       (print-ellipsis/children (stream element final? depth)
                         (declare (ignore element final? depth))
                         (format stream "…"))
@@ -237,7 +236,7 @@
                                    #'print-ellipsis/content)))
                  ;; Print children if requested.
                  (cond
-                   (children?
+                   ((and children children?)
                     (print-children children))
                    ((and children children-ellipsis?)
                     (print-children '(nil) #'print-ellipsis/children)))))))
