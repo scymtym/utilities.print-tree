@@ -85,12 +85,12 @@
                 print-nodes))
 (defun print-nodes (stream nodes printer depth)
   (let ((length (length nodes)))
-    (loop :for element :in   nodes
-          :for i       :from 1     :do
+    (loop :for node :in   nodes
+          :for i    :from 1     :do
       (let* ((final?       (= i length))
              (child-string (tree-child (if final? :final :inner))))
         (write-string child-string stream)
-        (funcall printer stream element final? depth)
+        (funcall printer stream node final? depth)
         (unless final? (pprint-newline :mandatory stream))))))
 
 (declaim (ftype (function (stream sequence function
@@ -129,12 +129,12 @@
 
    CHILDREN is called with a node and must return a (possibly empty)
    list of children of the node. "
-  (labels ((printer (stream element final? depth)
+  (labels ((printer (stream node final? depth)
              ;; Print first line of node using FIRST-LINE-PRINTER.
              ;; The call returns a Boolean to indicates whether more
              ;; lines should be printed using REST-PRINTER.
-             (let ((rest?    (funcall first-line-printer stream depth element))
-                   (children (funcall children element)))
+             (let ((rest?    (funcall first-line-printer stream depth node))
+                   (children (funcall children node)))
                ;; When there is a REST-PRINTER and FIRST-LINE-PRINTER
                ;; indicated that more lines should be printed, start a
                ;; new line and print within a logical block.
@@ -142,7 +142,7 @@
                  (pprint-newline :mandatory stream)
                  (flet ((content-printer (stream depth)
                           (print-node-contents
-                           stream (rcurry rest-printer element)
+                           stream (rcurry rest-printer node)
                            (if children nil t) depth)))
                    (declare (dynamic-extent #'content-printer))
                    (print-node-contents
@@ -180,10 +180,10 @@
      butlast the :children bit has not been specified?
 
    When PREDICATE returns T, all bits are printed."
-  (labels ((printer (stream element final? depth)
+  (labels ((printer (stream node final? depth)
              (labels (;; Printers for first line of node.
                       (print-first-line ()
-                        (funcall first-line-printer stream depth element))
+                        (funcall first-line-printer stream depth node))
                       (print-ellipsis/first-line ()
                         (format stream "…"))
                       ;; Printers for content of node.
@@ -192,20 +192,20 @@
                           (pprint-newline :mandatory stream)
                           (flet ((content-printer (stream depth)
                                    (print-node-contents
-                                    stream (rcurry printer element)
+                                    stream (rcurry printer node)
                                     (if children? nil t) depth)))
                             (declare (dynamic-extent #'content-printer))
                             (print-node-contents
                              stream #'content-printer final? depth))))
-                      (print-ellipsis/content (stream depth element)
-                        (declare (ignore depth element))
+                      (print-ellipsis/content (stream depth node)
+                        (declare (ignore depth node))
                         (format stream "…"))
                       ;; Printers for children of node.
                       (print-children (children &optional (printer #'printer))
                         (pprint-newline :mandatory stream)
                         (print-subtree stream children printer final? depth))
-                      (print-ellipsis/children (stream element final? depth)
-                        (declare (ignore element final? depth))
+                      (print-ellipsis/children (stream node final? depth)
+                        (declare (ignore node final? depth))
                         (format stream "…"))
 
                       (bit? (bit bits)
@@ -214,8 +214,8 @@
                                         #'print-content #'print-ellipsis/content
                                         #'print-children #'print-ellipsis/children))
                (let* ((rest?)
-                      (children           (funcall children element))
-                      (bits               (funcall predicate depth element))
+                      (children           (funcall children node))
+                      (bits               (funcall predicate depth node))
                       (first?             (bit? :first bits))
                       (content?           (bit? :content bits))
                       (children?          (bit? :children bits))
