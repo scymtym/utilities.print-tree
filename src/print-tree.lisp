@@ -1,10 +1,13 @@
 ;;;; print-tree.lisp --- Implementation of the utilities.print-tree system.
 ;;;;
-;;;; Copyright (C) 2014 Jan Moringen
+;;;; Copyright (C) 2014, 2015 Jan Moringen
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
 (cl:in-package #:utilities.print-tree)
+
+(declaim (inline tree-child  tree-child/unicode  tree-child/ascii
+                 tree-prefix tree-prefix/unicode tree-prefix/ascii))
 
 ;;; Constants
 
