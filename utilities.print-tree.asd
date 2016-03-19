@@ -38,7 +38,8 @@
   :components  ((:module     "test"
                  :serial     t
                  :components ((:file       "package")
-                              (:file       "print-tree")))))
+                              (:file       "print-tree")
+                              (:file       "examples")))))
 
 (defmethod perform ((operation test-op)
                     (component (eql (find-system :utilities.print-tree.test))))
