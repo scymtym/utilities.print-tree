@@ -23,9 +23,11 @@
   t)
 
 (defmethod print-details ((target stream) (depth t) (component asdf:component))
-  (format target "Pathname   ~A~@:_~
+  (format target "~@[Version    ~A~@:_~]~
+                  Pathname   ~A~@:_~
                   Encoding   ~A~@:_~
                   Depends-on ~A"
+          (asdf:component-version    component)
           (asdf:component-pathname   component)
           (asdf:component-encoding   component)
           (asdf:component-depends-on 'asdf:load-op component)))
