@@ -17,4 +17,8 @@
                  :components ((:file       "package")
                               (:file       "print-tree")))
 
-                (:static-file "README.org")))
+                (:static-file "README.org")
+
+                (:module     "examples"
+                 :components ((:static-file "minimal.lisp")
+                              (:static-file "asdf.lisp")))))
