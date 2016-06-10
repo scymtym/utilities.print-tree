@@ -31,6 +31,7 @@
   :version     (:read-file-form "version-string.sexp")
   :license     "LLGPLv3" ; see COPYING file for details.
   :description "Unit tests for the utilities.print-tree system."
+  :defsystem-depends-on (:uiop)
   :depends-on  (:alexandria
                 :fiveam
                 (:version :utilities.print-tree (:read-file-form "version-string.sexp")))
