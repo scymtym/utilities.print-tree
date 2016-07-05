@@ -14,14 +14,16 @@
   (mapc (lambda (spec)
           (destructuring-bind (tree expected) spec
             (let ((result (with-output-to-string (stream)
-                            (print-tree
-                             stream tree
-                             (make-node-printer
-                              (lambda (stream depth node)
-                                (format stream "~A@~D" (car node) depth))
-                              nil
-                              #'cdr)))))
-              (is (string= result expected)))))
+                            (with-standard-io-syntax
+                              (let ((*print-pretty* t))
+                                (print-tree
+                                 stream tree
+                                 (make-node-printer
+                                  (lambda (stream depth node)
+                                    (format stream "~A@~D" (car node) depth))
+                                  nil
+                                  #'cdr)))))))
+              (is (string= expected result)))))
         `(((1) "1@0")
 
           ((1 (2) (3 (4) (5)))
