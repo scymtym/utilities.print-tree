@@ -11,6 +11,9 @@
   or Unicode characters to render the parent-child relations. One
   focus is playing nicely with pretty printing.
 
+  #+ATTR_HTML: :alt "build status image" :title Build Status :align right
+  [[https://travis-ci.org/scymtym/utilities.print-tree][https://travis-ci.org/scymtym/utilities.print-tree.svg]]
+
   The following example shows the result of printing the
   =utilities.print-tree= ASDF system without and with additional
   details added to nodes:
