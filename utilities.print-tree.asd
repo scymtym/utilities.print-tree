@@ -23,9 +23,9 @@
                  :components ((:static-file "minimal.lisp")
                               (:static-file "asdf.lisp"))))
 
-  :in-order-to ((test-op (test-op :utilities.print-tree.test))))
+  :in-order-to ((test-op (test-op :utilities.print-tree-test))))
 
-(defsystem :utilities.print-tree.test
+(defsystem :utilities.print-tree-test
   :author      "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>"
   :maintainer  "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>"
   :version     (:read-file-form "version-string.sexp")
@@ -43,5 +43,5 @@
                               (:file       "examples")))))
 
 (defmethod perform ((operation test-op)
-                    (component (eql (find-system :utilities.print-tree.test))))
+                    (component (eql (find-system :utilities.print-tree-test))))
   (uiop:symbol-call '#:utilities.print-tree.test '#:run-tests))
