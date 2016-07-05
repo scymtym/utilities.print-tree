@@ -27,4 +27,4 @@
   "Test suite for the utilities.print-tree system.")
 
 (defun run-tests ()
-  (5am:run! :utilities.print-tree))
+  (run! :utilities.print-tree))

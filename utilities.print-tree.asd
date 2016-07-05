@@ -33,7 +33,7 @@
   :description "Unit tests for the utilities.print-tree system."
   :defsystem-depends-on (:uiop)
   :depends-on  (:alexandria
-                :fiveam
+                (:version :fiveam               "1.3")
                 (:version :utilities.print-tree (:read-file-form "version-string.sexp")))
   :encoding    :utf-8
   :components  ((:module     "test"
