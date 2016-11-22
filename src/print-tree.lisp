@@ -1,6 +1,6 @@
 ;;;; print-tree.lisp --- Implementation of the utilities.print-tree system.
 ;;;;
-;;;; Copyright (C) 2014, 2015 Jan Moringen
+;;;; Copyright (C) 2014, 2015, 2016 Jan Moringen
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
@@ -9,9 +9,7 @@
 (declaim (inline tree-child  tree-child/unicode  tree-child/ascii
                  tree-prefix tree-prefix/unicode tree-prefix/ascii))
 
-;;; Constants
-
-;; For Unicode
+;;; Constants for Unicode
 
 (define-constant +tree-child/inner+ "├─" :test #'string=)
 
@@ -32,7 +30,7 @@
     (:inner +tree-prefix/inner+)
     (:final +tree-prefix/final+)))
 
-;; For ASCII
+;; Constants for ASCII
 
 (define-constant +tree-child/inner/ascii+ "+-" :test #'string=)
 
@@ -55,7 +53,7 @@
 
 ;;; Variables
 
-(defvar *use-unicode?* t)
+(defvar *use-unicode?* #-win32 t #+win32 nil)
 
 (defun tree-child (kind)
   (if *use-unicode?*
