@@ -1,6 +1,6 @@
 ;;;; print-tree.lisp --- Implementation of the utilities.print-tree system.
 ;;;;
-;;;; Copyright (C) 2014, 2015, 2016 Jan Moringen
+;;;; Copyright (C) 2014-2020 Jan Moringen
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
@@ -53,7 +53,7 @@
 
 ;;; Variables
 
-(defvar *use-unicode?* #-win32 t #+win32 nil)
+(defvar *use-unicode?* t)
 
 (defun tree-child (kind)
   (if *use-unicode?*
