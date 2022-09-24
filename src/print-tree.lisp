@@ -1,6 +1,6 @@
 ;;;; print-tree.lisp --- Implementation of the utilities.print-tree system.
 ;;;;
-;;;; Copyright (C) 2014-2020 Jan Moringen
+;;;; Copyright (C) 2014-2022 Jan Moringen
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
@@ -79,8 +79,9 @@
    Functions suitable for use as PRINTER can, for many common cases,
    be constructed via `make-node-printer' and
    `make-folding-node-printer'."
-  (pprint-logical-block (stream (list root))
-    (funcall printer stream root :root 0)))
+  (let ((*print-pretty* t))
+    (pprint-logical-block (stream (list root))
+      (funcall printer stream root :root 0))))
 
 (declaim (ftype (function (stream sequence function non-negative-integer))
                 print-nodes))

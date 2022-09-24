@@ -1,6 +1,6 @@
 ;;;; print-tree.lisp --- Unit tests for the print-tree function.
 ;;;;
-;;;; Copyright (C) 2014, 2016 Jan Moringen
+;;;; Copyright (C) 2014,2022 Jan Moringen
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
@@ -10,19 +10,17 @@
 
 (test print-tree.smoke
   "Smoke test for the `print-tree' function."
-
   (mapc (lambda (spec)
           (destructuring-bind (tree expected) spec
             (let ((result (with-output-to-string (stream)
                             (with-standard-io-syntax
-                              (let ((*print-pretty* t))
-                                (print-tree
-                                 stream tree
-                                 (make-node-printer
-                                  (lambda (stream depth node)
-                                    (format stream "~A@~D" (car node) depth))
-                                  nil
-                                  #'cdr)))))))
+                              (print-tree
+                               stream tree
+                               (make-node-printer
+                                (lambda (stream depth node)
+                                  (format stream "~A@~D" (car node) depth))
+                                nil
+                                #'cdr))))))
               (is (string= expected result)))))
         `(((1) "1@0")
 
